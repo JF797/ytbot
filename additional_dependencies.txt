@@ -1,0 +1,2 @@
+This app requires the use of yt-dlp. Which can be found below.
+https://github.com/yt-dlp/yt-dlp
