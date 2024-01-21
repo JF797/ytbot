@@ -4,11 +4,14 @@ from datetime import datetime
 import logging
 import re
 import os
+import time
 
 # Configurations required for Discord
 intents = discord.Intents.all()
 client = discord.Client(intents=intents)
-TOKEN = ""
+# Set token value from token.txt file in same directory as project.
+with open("token", "r") as tokenFile:
+    TOKEN = tokenFile.read()
 
 
 # Datetime settings for file structures and logging
@@ -20,6 +23,7 @@ directory = "/tmp/outputs"
 logLocation = directory + '/logs'
 logFilePath = (logLocation+now.strftime("/%Y%m%d.log"))
 cookiesLocation = (directory+"/cookies.txt")
+
 
 # Constants / variables used in code
 linkFound = False
@@ -63,11 +67,13 @@ def getLinkName(videoLink):
     return os.popen(f'yt-dlp --skip-download -e {videoLink}').read()
 
 
-def downloadVideo(videoLink, fileTimestamp, fileTitle, directory):
-    outputName = f'{fileTimestamp}_{fileTitle}'
-    os.system(f'yt-dlp --output {directory}/"{outputName}".mp4 {videoLink}')
+def compileFullOutputFilePath(fileTimestamp, fileTitle, directory):
+    return f'{directory}/"{fileTimestamp}_{fileTitle}".mp4'
 
+def downloadVideo(videoLink, videoFullPath):
+    os.system(f'yt-dlp --output {videoFullPath} {videoLink}')
     return
+
 
 # Main code
 
@@ -78,8 +84,6 @@ checkDirExistsIfNoThenCreate(directory)
 # Check if today's log file exists, if not then create it.
 checkDirExistsIfNoThenCreate(logLocation)
 checkFileExistsIfNoThenCreate(logFilePath)
-
-
 
 @client.event
 async def on_ready():
@@ -108,10 +112,18 @@ async def on_message(message):
     if youtube_match:
         # Output the YouTube link to the chat
         youtubeVideoName = getLinkName(userMessage)
+        await message.delete()
         await message.channel.send(f'Found YouTube link for video titled: {youtubeVideoName}')
+        time.sleep(0.5)
         await message.channel.send(f'Now downloading video')
-        downloadVideo(userMessage, timestampNow, youtubeVideoName, directory)
+        outputFile = compileFullOutputFilePath(timestampNow, youtubeVideoName, directory)
+        downloadVideo(userMessage, outputFile)
         await message.channel.send(f'Video "{youtubeVideoName}" downloaded')
+        await message.channel.send(file=discord.File(outputFile))
+        # try:
+        #     await message.channel.send(file=discord.File(outputFile))
+        # except:
+        #     print("nope")
         # await message.channel.send(f'YouTube link detected: {youtube_match.group(0)}')
 
 
