@@ -80,13 +80,16 @@ async def on_message(message):
         outputFile = compileFullOutputFilePath(timestampNow, youtubeVideoName, directory)
         downloadVideo(userMessage, outputFile)
         await message.channel.send(f'Video "{youtubeVideoName}" downloaded')
-        await message.channel.send(file=discord.File(outputFile))
-        # try:
-        #     await message.channel.send(file=discord.File(outputFile))
-        # except:
-        #     print("nope")
-        # await message.channel.send(f'YouTube link detected: {youtube_match.group(0)}')
+        # Have to change file name temporarily to allow discord to send the video
+        changeVideoFileName(outputFile, (directory+"/temp.mp4"))
+        try:
+            await message.channel.send(file=discord.File(directory+"/temp.mp4"))
 
+        except (FileNotFoundError):
+            logging.error('Error uploading file: File could not be found')
+            await message.channel.send(f'Could not upload video {youtubeVideoName} due to FileNotFound error.')
+        # Change video name back to what it was to keep records.
+        changeVideoFileName((directory+"/temp.mp4"), (compileFullOutputFilePath(timestampNow, youtubeVideoName, directory)))
 
     # commands
     if userMessage.lower() == '!help':

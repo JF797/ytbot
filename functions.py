@@ -26,9 +26,13 @@ def checkDirExistsIfNoThenCreate(directory):
     else:
         logging.info(f'Directory {directory} already exists. Continuing')
         return
+
+def changeVideoFileName(fileLocation, newName):
+    os.system(f'mv {fileLocation} {newName}')
+    return
+
 def getLinkName(videoLink):
     return os.popen(f'yt-dlp --skip-download -e {videoLink}').read()
-
 
 def compileFullOutputFilePath(fileTimestamp, fileTitle, directory):
     return f'{directory}/"{fileTimestamp}_{fileTitle}".mp4'
