@@ -88,12 +88,34 @@ async def on_message(message):
         except (FileNotFoundError):
             logging.error('Error uploading file: File could not be found')
             await message.channel.send(f'Could not upload video {youtubeVideoName} due to FileNotFound error.')
+        except ('discord.errors.HTTPException: 413 Payload Too Large'):
+            await message.channel.send('video was too large')
         # Change video name back to what it was to keep records.
         changeVideoFileName((directory+"/temp.mp4"), (compileFullOutputFilePath(timestampNow, youtubeVideoName, directory)))
 
     # commands
     if userMessage.lower() == '!help':
         await message.channel.send(f"This is a help message for {username}")
+        return
+
+    if '!manual' in userMessage.lower():
+        videoLink = userMessage.replace('!manual ', '')
+        logging.info(f'Manual download initiated. Download link: {videoLink}')
+        outputFile = compileFullOutputFilePath(timestampNow, 'manual_download', directory)
+        downloadVideo(videoLink, outputFile)
+        await message.channel.send(f'Video "{outputFile}" downloaded')
+        changeVideoFileName(outputFile, (directory + "/temp.mp4"))
+        await message.channel.send(f'Video "{outputFile}" downloaded')
+        try:
+            await message.channel.send(file=discord.File(directory+"/temp.mp4"))
+
+        except (FileNotFoundError):
+            logging.error('Error uploading file: File could not be found')
+            await message.channel.send(f'Could not upload video {outputFile} due to FileNotFound error.')
+        except ('discord.errors.HTTPException: 413 Payload Too Large'):
+            await message.channel.send('video was too large')
+        # Change video name back to what it was to keep records.
+        changeVideoFileName((directory+"/temp.mp4"), (compileFullOutputFilePath(timestampNow, outputFile, directory)))
         return
 
 

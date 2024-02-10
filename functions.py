@@ -28,7 +28,9 @@ def checkDirExistsIfNoThenCreate(directory):
         return
 
 def changeVideoFileName(fileLocation, newName):
+    logging.info(f'File name being changed from {fileLocation} to {newName}')
     os.system(f'mv {fileLocation} {newName}')
+    logging.info(f'File name change complete, new location is {newName}')
     return
 
 def getLinkName(videoLink):
