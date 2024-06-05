@@ -100,6 +100,8 @@ async def on_message(message):
 
 
     if tiktok_match:
+        now = datetime.now()
+        timestampNow = now.strftime("%Y%m%d_%H%M%S")
         await message.delete()
         await message.channel.send(f'Found Tiktok link which is now being downloaded...')
         time.sleep(0.5)
@@ -112,7 +114,8 @@ async def on_message(message):
         except (FileNotFoundError):
             logging.error('Error uploading file: File could not be found')
         changeVideoFileName((directory+"/temp.mp4"), (compileFullOutputFilePath(timestampNow, 'tiktok', directory)))
-
+        now = datetime.now()
+        timestampNow = now.strftime("%Y%m%d_%H%M%S")
 
 
     # commands
