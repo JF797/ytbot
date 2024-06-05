@@ -75,28 +75,28 @@ async def on_message(message):
     tiktok_match = re.match(tiktok_regex, userMessage)
 
 
-    if youtube_match:
-        # Output the YouTube link to the chat
-        youtubeVideoName = getLinkName(userMessage)
-        await message.delete()
-        await message.channel.send(f'Found YouTube link for video titled: {youtubeVideoName}')
-        time.sleep(0.5)
-        await message.channel.send(f'Now downloading video')
-        outputFile = compileFullOutputFilePath(timestampNow, youtubeVideoName, directory)
-        downloadVideo(userMessage, outputFile)
-        await message.channel.send(f'Video "{youtubeVideoName}" downloaded')
-        # Have to change file name temporarily to allow discord to send the video
-        changeVideoFileName(outputFile, (directory+"/temp.mp4"))
-        try:
-            await message.channel.send(file=discord.File(directory+"/temp.mp4"))
+    # if youtube_match:
+    #     # Output the YouTube link to the chat
+    #     youtubeVideoName = getLinkName(userMessage)
+    #     await message.delete()
+    #     await message.channel.send(f'Found YouTube link for video titled: {youtubeVideoName}')
+    #     time.sleep(0.5)
+    #     await message.channel.send(f'Now downloading video')
+    #     outputFile = compileFullOutputFilePath(timestampNow, youtubeVideoName, directory)
+    #     downloadVideo(userMessage, outputFile)
+    #     await message.channel.send(f'Video "{youtubeVideoName}" downloaded')
+    #     # Have to change file name temporarily to allow discord to send the video
+    #     changeVideoFileName(outputFile, (directory+"/temp.mp4"))
+    #     try:
+    #         await message.channel.send(file=discord.File(directory+"/temp.mp4"))
 
-        except (FileNotFoundError):
-            logging.error('Error uploading file: File could not be found')
-            await message.channel.send(f'Could not upload video {youtubeVideoName} due to FileNotFound error.')
-        except ('discord.errors.HTTPException: 413 Payload Too Large'):
-            await message.channel.send('video was too large')
-        # Change video name back to what it was to keep records.
-        changeVideoFileName((directory+"/temp.mp4"), (compileFullOutputFilePath(timestampNow, youtubeVideoName, directory)))
+    #     except (FileNotFoundError):
+    #         logging.error('Error uploading file: File could not be found')
+    #         await message.channel.send(f'Could not upload video {youtubeVideoName} due to FileNotFound error.')
+    #     except ('discord.errors.HTTPException: 413 Payload Too Large'):
+    #         await message.channel.send('video was too large')
+    #     # Change video name back to what it was to keep records.
+    #     changeVideoFileName((directory+"/temp.mp4"), (compileFullOutputFilePath(timestampNow, youtubeVideoName, directory)))
 
 
     if tiktok_match:
