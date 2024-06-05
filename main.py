@@ -70,6 +70,11 @@ async def on_message(message):
         '(watch\?v=|embed/|v/|.+\?v=)?([^&=%\?]{11})')
     youtube_match = re.match(youtube_regex, userMessage)
 
+    tiktok_regex = (
+        '^.*https:\/\/(?:m|www|vm)?\.?tiktok\.com\/((?:.*\b(?:(?:usr|v|embed|user|video)\/|\?shareId=|\&item_id=)(\d+))|\w+)')
+    tiktok_match = re.match(tiktok_regex, userMessage)
+
+
     if youtube_match:
         # Output the YouTube link to the chat
         youtubeVideoName = getLinkName(userMessage)
@@ -92,6 +97,23 @@ async def on_message(message):
             await message.channel.send('video was too large')
         # Change video name back to what it was to keep records.
         changeVideoFileName((directory+"/temp.mp4"), (compileFullOutputFilePath(timestampNow, youtubeVideoName, directory)))
+
+
+    if tiktok_match:
+        await message.delete()
+        await message.channel.send(f'Found Tiktok link which is now being downloaded...')
+        time.sleep(0.5)
+        outputFile = compileFullOutputFilePath(timestampNow,'tiktok', directory)
+        downloadVideo(userMessage, outputFile)
+        await message.channel.send(f'Video downloaded and being sent')
+        changeVideoFileName(outputFile, (directory+"/temp.mp4"))
+        try:
+            await message.channel.send(file=discord.File(directory+"/temp.mp4"))
+        except (FileNotFoundError):
+            logging.error('Error uploading file: File could not be found')
+        changeVideoFileName((directory+"/temp.mp4"), (compileFullOutputFilePath(timestampNow, 'tiktok', directory)))
+
+
 
     # commands
     if userMessage.lower() == '!help':
