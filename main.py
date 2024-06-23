@@ -5,6 +5,7 @@ import time
 from datetime import datetime
 from functions import *
 
+
 # Datetime settings for file structures and logging
 now = datetime.now()
 timestampNow = now.strftime("%Y%m%d_%H%M%S")
@@ -98,19 +99,19 @@ async def on_message(message):
     #     # Change video name back to what it was to keep records.
     #     changeVideoFileName((directory+"/temp.mp4"), (compileFullOutputFilePath(timestampNow, youtubeVideoName, directory)))
 
-
     if tiktok_match:
         now = datetime.now()
         timestampNow = now.strftime("%Y%m%d_%H%M%S")
-        await message.delete()
-        await message.channel.send(f'Found Tiktok link which is now being downloaded...')
+        print(str(getLinkName(userMessage)))
+        await message.channel.send(f'Found Tiktok link from {message.author} which is now being downloaded...\nVideo title: {getLinkName(userMessage)}')
         time.sleep(0.5)
         outputFile = compileFullOutputFilePath(timestampNow,'tiktok', directory)
         downloadVideo(userMessage, outputFile)
-        await message.channel.send(f'Video downloaded and being sent')
         changeVideoFileName(outputFile, (directory+"/temp.mp4"))
+ 
         try:
             await message.channel.send(file=discord.File(directory+"/temp.mp4"))
+            await message.delete()
         except (FileNotFoundError):
             logging.error('Error uploading file: File could not be found')
         changeVideoFileName((directory+"/temp.mp4"), (compileFullOutputFilePath(timestampNow, 'tiktok', directory)))
