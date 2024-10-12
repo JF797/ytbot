@@ -1,5 +1,6 @@
 import os
 import logging
+import re
 
 def checkingCookiesExists(directory):
     if not os.path.exists(directory):
@@ -42,3 +43,7 @@ def compileFullOutputFilePath(fileTimestamp, fileTitle, directory):
 def downloadVideo(videoLink, videoFullPath):
     os.system(f'yt-dlp --output {videoFullPath} {videoLink}')
     return
+
+def extractLinkFromText(text):
+    linkRegex = (r'(https?://[^\s]+)')
+    return (re.findall(linkRegex, text)[0])
