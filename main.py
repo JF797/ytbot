@@ -102,11 +102,12 @@ async def on_message(message):
     if tiktok_match:
         now = datetime.now()
         timestampNow = now.strftime("%Y%m%d_%H%M%S")
-        print(str(getLinkName(userMessage)))
-        await message.channel.send(f'Found Tiktok link from {message.author} which is now being downloaded...\nVideo title: {getLinkName(userMessage)}')
+        videoLink = extractLinkFromText(userMessage)
+        print(f'link: {videoLink}')
+        await message.channel.send(f'Found Tiktok link from {message.author} which is now being downloaded...\nVideo title: {getLinkName(videoLink)}')
         time.sleep(0.5)
         outputFile = compileFullOutputFilePath(timestampNow,'tiktok', directory)
-        downloadVideo(userMessage, outputFile)
+        downloadVideo(videoLink, outputFile)
         changeVideoFileName(outputFile, (directory+"/temp.mp4"))
  
         try:
