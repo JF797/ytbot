@@ -1,6 +1,7 @@
 import os
 import logging
 import re
+from datetime import datetime
 
 def checkingCookiesExists(directory):
     if not os.path.exists(directory):
@@ -47,3 +48,7 @@ def downloadVideo(videoLink, videoFullPath):
 def extractLinkFromText(text):
     linkRegex = (r'(https?://[^\s]+)')
     return (re.findall(linkRegex, text)[0])
+
+def generateTimestamp():
+    now = datetime.now()
+    return now.strftime("%Y%m%d_%H%M%S")

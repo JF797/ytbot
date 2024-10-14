@@ -7,8 +7,7 @@ from functions import *
 
 
 # Datetime settings for file structures and logging
-now = datetime.now()
-timestampNow = now.strftime("%Y%m%d_%H%M%S")
+timestampNow = generateTimestamp()
 
 # Directory configurations for local device. These will change depending on device running app
 directory = "/tmp/outputs"
@@ -76,8 +75,7 @@ async def on_message(message):
     tiktok_match = re.match(tiktok_regex, userMessage)
 
     if tiktok_match:
-        now = datetime.now()
-        timestampNow = now.strftime("%Y%m%d_%H%M%S")
+        timestampNow = generateTimestamp()
         videoLink = extractLinkFromText(userMessage)
         print(f'link: {videoLink}')
         await message.channel.send(f'Found Tiktok link from {message.author.display_name} which is now being downloaded...\nVideo title: {getLinkName(videoLink)}')
@@ -93,7 +91,7 @@ async def on_message(message):
             logging.error('Error uploading file: File could not be found')
         changeVideoFileName((directory+"/temp.mp4"), (compileFullOutputFilePath(timestampNow, 'tiktok', directory)))
         now = datetime.now()
-        timestampNow = now.strftime("%Y%m%d_%H%M%S")
+        timestampNow = generateTimestamp()
 
 
     # commands
@@ -102,7 +100,8 @@ async def on_message(message):
         return
 
     if '!manual' in userMessage.lower():
-        videoLink = userMessage.replace('!manual ', '')
+        timestampNow = generateTimestamp()
+        videoLink = extractLinkFromText(userMessage)
         logging.info(f'Manual download initiated. Download link: {videoLink}')
         outputFile = compileFullOutputFilePath(timestampNow, 'manual_download', directory)
         downloadVideo(videoLink, outputFile)
