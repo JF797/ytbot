@@ -8,11 +8,11 @@ from functions import *
 
 # Datetime settings for file structures and logging
 timestampNow = generateTimestamp()
-
+now = datetime.now()
 # Directory configurations for local device. These will change depending on device running app
 directory = "/tmp/outputs"
 logLocation = directory + '/logs'
-logFilePath = (logLocation+timestampNow.strftime("/%Y%m%d.log"))
+logFilePath = (logLocation+now.strftime("/%Y%m%d.log"))
 cookiesLocation = (directory+"/cookies.txt")
 
 try:
