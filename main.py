@@ -33,6 +33,9 @@ checkDirExistsIfNoThenCreate(directory)
 checkDirExistsIfNoThenCreate(logLocation)
 checkFileExistsIfNoThenCreate(logFilePath)
 
+# Check that yt-dlp is installed and is executable using standard PATH value
+checkApplicationInstalled("yt-dlp")
+
 
 # Configurations required for Discord
 intents = discord.Intents.all()
