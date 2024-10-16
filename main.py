@@ -12,7 +12,7 @@ timestampNow = generateTimestamp()
 # Directory configurations for local device. These will change depending on device running app
 directory = "/tmp/outputs"
 logLocation = directory + '/logs'
-logFilePath = (logLocation+now.strftime("/%Y%m%d.log"))
+logFilePath = (logLocation+timestampNow.strftime("/%Y%m%d.log"))
 cookiesLocation = (directory+"/cookies.txt")
 
 try:
@@ -90,7 +90,6 @@ async def on_message(message):
         except (FileNotFoundError):
             logging.error('Error uploading file: File could not be found')
         changeVideoFileName((directory+"/temp.mp4"), (compileFullOutputFilePath(timestampNow, 'tiktok', directory)))
-        now = datetime.now()
         timestampNow = generateTimestamp()
 
 
