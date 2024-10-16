@@ -2,6 +2,15 @@ import os
 import logging
 import re
 from datetime import datetime
+from shutil import which
+
+def checkApplicationInstalled(command):
+    installationLocation = which(command)
+    if installationLocation is not None:
+        logging.info(f'Application is installed at location: {installationLocation}')
+    else:
+        logging.warning(f'Application not installed, please install before running this script. Should be at {installationLocation}')
+        exit()
 
 def checkingCookiesExists(directory):
     if not os.path.exists(directory):
@@ -47,8 +56,10 @@ def downloadVideo(videoLink, videoFullPath):
 
 def extractLinkFromText(text):
     linkRegex = (r'(https?://[^\s]+)')
+    logging.info(f'Extracted link{re.findall(linkRegex, text)[0]} from text: {text}')
     return (re.findall(linkRegex, text)[0])
 
 def generateTimestamp():
     now = datetime.now()
+    logging.info(f'Taken timestamp for "now" at {now}')
     return now.strftime("%Y%m%d_%H%M%S")
