@@ -83,7 +83,6 @@ async def on_message(message):
         outputFile = compileFullOutputFilePath(timestampNow,'tiktok', directory)
         downloadVideo(videoLink, outputFile)
         changeVideoFileName(outputFile, (directory+"/temp.mp4"))
- 
         try:
             await message.channel.send(file=discord.File(directory+"/temp.mp4"))
             await message.delete()
@@ -102,13 +101,15 @@ async def on_message(message):
         timestampNow = generateTimestamp()
         videoLink = extractLinkFromText(userMessage)
         logging.info(f'Manual download initiated. Download link: {videoLink}')
+        await message.channel.send(f'Found manual link from {message.author.display_name} which is now being downloaded...\nVideo title: {getLinkName(videoLink)}')
         outputFile = compileFullOutputFilePath(timestampNow, 'manual_download', directory)
         downloadVideo(videoLink, outputFile)
-        await message.channel.send(f'Video "{outputFile}" downloaded')
+        time.sleep(10)
         changeVideoFileName(outputFile, (directory + "/temp.mp4"))
-        await message.channel.send(f'Video "{outputFile}" downloaded')
+        print(f'after change: {outputFile}')
         try:
             await message.channel.send(file=discord.File(directory+"/temp.mp4"))
+            await message.delete()
 
         except (FileNotFoundError):
             logging.error('Error uploading file: File could not be found')
