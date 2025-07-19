@@ -80,11 +80,17 @@ async def on_message(message):
     if tiktok_match:
         timestampNow = generateTimestamp()
         videoLink = extractLinkFromText(userMessage)
-        print(f'link: {videoLink}')
-        await message.channel.send(f'Found Tiktok link from {message.author.display_name} which is now being downloaded...\nVideo title: {getLinkName(videoLink)}')
+        videoTitle=getLinkName(videoLink)
+        await message.channel.send(f'Found Tiktok link from {message.author.display_name} which is now being downloaded...\nVideo title: {videoTitle}')
         time.sleep(0.5)
         outputFile = compileFullOutputFilePath(timestampNow,'tiktok', directory)
         downloadVideo(videoLink, outputFile)
+        fileTooBig, fileSize=isFileTooBig(outputFile)
+        # if/break statement in place as error catching wasn't working for file size being too large
+        if fileTooBig == True:
+            await message.channel.send(f'Video: {videoTitle} is too large, size of video is {fileSize} bytes - the limit for Discord is 10485760.')
+            os.remove(outputFile)
+            break
         changeVideoFileName(outputFile, (directory+"/temp.mp4"))
         try:
             await message.channel.send(file=discord.File(directory+"/temp.mp4"))

@@ -59,6 +59,14 @@ def extractLinkFromText(text):
     logging.info(f'Extracted link{re.findall(linkRegex, text)[0]} from text: {text}')
     return (re.findall(linkRegex, text)[0])
 
+# Chcek that file size is over limit
+def isFileTooBig(videoFile):
+    fileSizeBytes=os.path.getsize(videoFile)
+    if fileSizeBytes >= 10485760:
+        return True, fileSizeBytes
+    else:
+        return False, fileSizeBytes
+
 def generateTimestamp():
     now = datetime.now()
     logging.info(f'Taken timestamp for "now" at {now}')
